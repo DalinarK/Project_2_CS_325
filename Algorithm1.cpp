@@ -22,6 +22,7 @@ int coinCounter(vector <struct coins*> resultVector)
 
 	for (unsigned int i; i < resultVector.size(); i++)
 	{
+		printf("Coin amount in resultVector coinValue %i is %i\n", resultVector[i]->coinValue, resultVector[i]->coinAmount );
 		sumCoins += resultVector[i]->coinAmount;
 	}
 
@@ -49,18 +50,23 @@ vector <struct coins*> makeChange(int changeAmount, vector <struct coins*> coins
 
 	for (unsigned int i = 0; i < coinsUsedVector.size(); i++)
 	{
+		resultCoins = 0;
+		lowestcoins = largeInt;
+
 		if (changeAmount > coinsUsedVector[i]->coinValue)
 		{
 			newChangeAmount = changeAmount - coinsUsedVector[i]->coinValue;
 			coinsUsedVector[i]->coinAmount++;
-			printf("Calling function with changeAmount %i \n", newChangeAmount);
+			printf("Calling function with changeAmount %i - coin %i = %i \n", changeAmount, coinsUsedVector[i]->coinValue, newChangeAmount);
 			resultVector = makeChange(newChangeAmount, coinsUsedVector);
 		}
 
-		printf("Comparing resultCoins to lowest coins\n");
+		
 		resultCoins = coinCounter(resultVector);
+		printf("Comparing resultCoins %i to %i lowest coins\n", resultCoins, lowestcoins);
 		if (resultCoins < lowestcoins)
 		{
+			lowestcoins = resultCoins;
 			lowestCoinVector = resultVector;
 		}
 	}
