@@ -13,6 +13,7 @@ struct coins
 {
 	int coinAmount;
 	int coinValue;
+	int changeLeft;
 };
 
 //counts the amount of coins used in the vector for the sum.
@@ -35,17 +36,20 @@ vector <struct coins*> makeChange(int changeAmount, vector <struct coins*> coins
 	int resultCoins;
 	vector <struct coins*> lowestCoinVector;
 	int lowestcoins = largeInt;
-	int newChangeAmount;
+	int newChangeAmount= 88;
 
 	vector <struct coins*> currentVector;
 
 	//basecase
 	for (unsigned int i = 0; i < coinsUsedVector.size(); i++)
 	{
-		if (coinsUsedVector[i]->coinValue == changeAmount)
+		currentVector = coinsUsedVector;
+		
+		if (coinsUsedVector[i]->coinValue == coinsUsedVector[0]->changeLeft)
 		{
 			coinsUsedVector[i]->coinAmount++;
-			printf("Base Case Reached Returning with +1 amount to coin value. Value: %i Amount: %i Value: %i Amount: %i %i\n",coinsUsedVector[i]->coinValue, coinsUsedVector[0]->coinValue, coinsUsedVector[0]->coinAmount, coinsUsedVector[1]->coinValue, coinsUsedVector[1]->coinAmount );
+			coinsUsedVector[0]->changeLeft -= coinsUsedVector[i]->coinValue;
+			printf("Base Case Reached Returning with +1 amount to coin value %i. Value: %i Amount: %i Value: %i Amount: %i\n",coinsUsedVector[i]->coinValue, coinsUsedVector[0]->coinValue, coinsUsedVector[0]->coinAmount, coinsUsedVector[1]->coinValue, coinsUsedVector[1]->coinAmount );
 			return coinsUsedVector;
 		}
 	}
@@ -55,11 +59,11 @@ vector <struct coins*> makeChange(int changeAmount, vector <struct coins*> coins
 		resultCoins = 0;
 		currentVector = coinsUsedVector;
 
-		if (changeAmount > currentVector[i]->coinValue)
+		printf("Calling function with changeAmount %i - coin %i = %i \n", coinsUsedVector[0]->changeLeft, currentVector[i]->coinValue, currentVector[0]->changeLeft);
+		if (coinsUsedVector[0]->changeLeft > currentVector[i]->coinValue)
 		{
-			newChangeAmount = changeAmount - currentVector[i]->coinValue;
+			currentVector[0]->changeLeft = currentVector[0]->changeLeft - currentVector[i]->coinValue;
 			currentVector[i]->coinAmount++;
-			printf("Calling function with changeAmount %i - coin %i = %i \n", changeAmount, currentVector[i]->coinValue, newChangeAmount);
 			resultVector = makeChange(newChangeAmount, currentVector);
 		}
 
@@ -84,9 +88,9 @@ vector <struct coins*> makeChange(int changeAmount, vector <struct coins*> coins
 
 int main (int argc, const char * argv[])
 {
-	int changeAmount = 3;
+	int changeAmount = 10;
 	vector <struct coins*> coinsUsedVector;
-	vector <int> coinValues {1, 2};
+	vector <int> coinValues {1, 5};
 
 	vector <struct coins*> resultVector;
 	int resultCoins;
@@ -96,6 +100,7 @@ int main (int argc, const char * argv[])
 		struct coins *test = new struct coins;
 		test->coinAmount = 0;
 		test->coinValue = coinValues[i];
+		test->changeLeft = changeAmount;
 		coinsUsedVector.push_back(test);
 		printf("pushed coin value %i\n", coinsUsedVector.back()->coinValue);
 	}
