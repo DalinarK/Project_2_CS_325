@@ -6,9 +6,9 @@ CXXFLAGS += -g
 #CXXFLAGS += -O3
 #LDFLAGS = -lboost_date_time
 
-OBJS = read.o
+OBJS = Algorithm1.o
 
-SRCS = read.cpp
+SRCS = Algorithm1.cpp
 
 HEADERS =
 
