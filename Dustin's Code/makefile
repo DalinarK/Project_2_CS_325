@@ -10,9 +10,9 @@ OBJS1 = Algorithm1.o
 
 SRCS1 = Algorithm1.cpp
 
-OBJS2 = Algorithm2.o
+OBJS2 = Algorithm3.o
 
-SRCS2 = Algorithm2.cpp
+SRCS2 = Algorithm3.cpp
 
 
 HEADERS =
