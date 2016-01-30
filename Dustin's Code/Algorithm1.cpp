@@ -74,9 +74,9 @@ vector <struct coins> makeChange(int changeAmount, vector <struct coins> coinsUs
 
 int main (int argc, const char * argv[])
 {
-	int changeAmount = 11;
+	int changeAmount = 15;
 	vector <struct coins> coinsUsedVector;
-	vector <int> coinValues {1, 3, 4};
+	vector <int> coinValues {1, 2, 4, 8};
 
 	vector <struct coins> resultVector;
 	int resultCoins;
@@ -101,7 +101,7 @@ int main (int argc, const char * argv[])
 
 	for (unsigned int i = 0; i < resultVector.size(); i++)
 	{
-		printf("Coin: %i Value: %i \n", resultVector[i].coinValue, resultVector[i].coinAmount);
+		printf("Coin value: %i Amount: %i \n", resultVector[i].coinValue, resultVector[i].coinAmount);
 	}
 }
 
@@ -109,13 +109,13 @@ int coinCounter(vector <struct coins> resultVector)
 {
 	int sumCoins;
 
-	printf("counting: ");
+	// printf("counting: ");
 	for (unsigned int i = 0; i < resultVector.size(); i++)
 	{
-		printf("coin: %i count: %i ", resultVector[i].coinValue, resultVector[i].coinAmount );
+		// printf("coin: %i count: %i ", resultVector[i].coinValue, resultVector[i].coinAmount );
 		sumCoins += resultVector[i].coinAmount;
 	}
-	printf("\n");
+	// printf("\n");
 
 	return sumCoins;
 }
