@@ -74,7 +74,7 @@ int main(int argc, char* argv[]){
 		int strsize = tempoutputfilename.length() - 4;
 		/* http://www.cplusplus.com/reference/string/string/operator+/ 
 		http://www.cplusplus.com/reference/string/string/substr/ */
-		outputfilename = (tempoutputfilename.substr(0, strsize)) + "change.txt";
+		outputfilename = (tempoutputfilename.substr(0, strsize));
         timingOutputFile =(tempoutputfilename.substr(0, strsize)) + "timings.txt";
 		std::cout << outputfilename << std::endl;
 	}
@@ -83,15 +83,8 @@ int main(int argc, char* argv[]){
 	Credit: http://www.cplusplus.com/doc/tutorial/files/*/
     std::ifstream textfile;
 	/* In order to open a file with a stream object we use its member function open */
-    textfile.open(filename);
 	/* To check if a file stream was successful opening a file, you can do it by calling to member is_open
 	Credit: http://www.cplusplus.com/doc/tutorial/files/*/
-    if(!textfile.is_open())
-    {
-        std::cout << "The file could not be opened." << std::endl;
-        textfile.close();
-        exit(1);
-    }
 	/* Call function to put first alternating lines as the coin set input and the second alternating lines as total change V */
     std::vector<std::vector<int>> coinsetinput;
     std::vector<int> changevalueV;
@@ -127,7 +120,7 @@ int main(int argc, char* argv[]){
         // the iterator constructor can also be used to construct from arrays:
   int myints0[] = {1, 5, 10, 25, 50};
   std::vector<int> coinSet1 (myints0, myints0 + sizeof(myints0) / sizeof(int) );
-  for(int i = 5000; i <= 200000; i += 5000 ){
+  for(int i = 1000000; i <= 50000000; i += 10000 ){
         writeResults( textfile2, coinSet1, i );
     }
     

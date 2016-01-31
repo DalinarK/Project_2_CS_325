@@ -106,6 +106,7 @@ int main(int argc, char* argv[]){
         int result = changegreedy( coinsetinput.at(i), changevalueV.at(i), coinCount);
         double runtime = (std::clock() - start) / (double) CLOCKS_PER_SEC;
         timingFileStream << changevalueV.at(i) << ", " << runtime << "\n";
+        cout << "time: " << runtime << "\n";
     }
 
         // void runtimetrial(int (*whichAlg)(std::vector<int>&, int, std::vector<int>&), std::vector<int>& coinSet, int coinSetValue, std::vector<int> &actualCoinsUsed)
