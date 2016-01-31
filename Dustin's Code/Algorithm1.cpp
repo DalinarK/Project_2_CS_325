@@ -6,6 +6,9 @@ using std::vector;
 // just a large int for initializing purposes
 const int largeInt = 999999;
 
+// just a large int for initializing purposes
+const int largeInt = 999999;
+
 struct coins
 {
 	int coinAmount;
