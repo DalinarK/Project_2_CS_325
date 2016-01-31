@@ -1,0 +1,12 @@
+Brute Force 
+
+[0, 1, 2]
+3
+ 
+Greedy
+
+[0, 1, 2]
+3
+ 
+Dynamic Programming
+

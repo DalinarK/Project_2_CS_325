@@ -47,6 +47,8 @@ int coinCounter(vector <struct coins> resultVector);
 int main(int argc, char* argv[]){
 	std::string filename;
 	std::string outputfilename;
+    std::string timingOutputFile;
+
 
     int changeAmount;
     vector <struct coins> coinsUsedVector;
@@ -73,6 +75,7 @@ int main(int argc, char* argv[]){
 		/* http://www.cplusplus.com/reference/string/string/operator+/ 
 		http://www.cplusplus.com/reference/string/string/substr/ */
 		outputfilename = (tempoutputfilename.substr(0, strsize)) + "change.txt";
+        timingOutputFile =(tempoutputfilename.substr(0, strsize)) + "timings.txt";
 		std::cout << outputfilename << std::endl;
 	}
 	//cout << filename << endl;
@@ -97,17 +100,32 @@ int main(int argc, char* argv[]){
 	/* Stream class to write on files
 	Credit: http://www.cplusplus.com/doc/tutorial/files/*/
 	std::ofstream textfile2;
+    std::ofstream timingStream;
+
     textfile2.open(outputfilename);
+    timingStream.open(timingOutputFile);
+
     if(!textfile2.is_open())
     {
         std::cout << "Cannot open for writing. Check the permissions of the directory." << std::endl;
         textfile2.close();
         exit(1);
     }
+    if(!timingStream.is_open())
+    {
+        std::cout << "Cannot open timingFile for writing. Check the permissions of the directory." << std::endl;
+        timingStream.close();
+        exit(1);
+    }
 	/* Display a babel for brute force algorithm time trial */
-    std::cout << "Testing changeslow...." << std::endl;
+    std::cout << "Testing Bruteforce...." << std::endl;
     for( unsigned int i = 0; i < coinsetinput.size(); i++ )
     {
+        coinValues.clear();
+        resultVector.clear();
+        coinsUsedVector.clear();
+
+        printf("Sieze of coinValues is %i \n",coinValues.size() );
         changeAmount = changevalueV.at(i);
         coinValues = coinsetinput.at(i);
 
@@ -119,31 +137,28 @@ int main(int argc, char* argv[]){
             test.coinValue = coinValues[i];
             test.changeLeft = changeAmount;
             coinsUsedVector.push_back(test);
-            printf("pushed coin value %i\n", coinsUsedVector.back().coinValue);
+            // printf("pushed coin value %i\n", coinsUsedVector.back().coinValue);
         }
 
+        std::clock_t start = std::clock();
+    
         resultVector = makeChange(changeAmount, coinsUsedVector);
         resultCoins = coinCounter(resultVector);
+        double runtime = (std::clock() - start) / (double) CLOCKS_PER_SEC;
+
+        printf("Running time is %f\n", runtime);
         printf("The minimum amount of coins used is: %i\n", resultCoins);
 
         for (unsigned int i = 0; i < resultVector.size(); i++)
         {
-            printf("Coin value: %i Amount: %i \n", resultVector[i].coinValue, resultVector[i].coinAmount);
+            printf("Coin value: %i Amount: %i | ", resultVector[i].coinValue, resultVector[i].coinAmount);
         }
+        printf("\n");
 
-        /* Run brute force algorithm on input numbers from first to last element */
-		
-		// runtimetrial( changeslow, coinsetinput.at(i), changevalueV.at(i), coinCount );
+        timingStream << changeAmount << ", " << runtime << std::endl;
+        writeResults(textfile2, coinValues, resultCoins);	
     }
-	/* Call function to output is to be written to text file */
-    textfile2 << "Brute Force \n\n";
-	 /* Run changeslow algorithm on input numbers */
-    // for( unsigned int i = 0; i < coinsetinput.size(); i++ )
-    // {
-    //     std::vector<int> coinCount;
-    //     int minCoins = changeslow( coinsetinput.at(i), changevalueV.at(i), coinCount );
-    //     writeResults( textfile2, coinCount, minCoins );
-    // }
+    timingStream.close();
     textfile2.close();	
 }
 
@@ -263,7 +278,7 @@ void writeResults(std::ofstream &output, std::vector<int>& results,int total)
 	/* Once you get to last number, add a end bracket and newline */
     output << results.at(results.size() - 1) << "]" << std::endl;
     /* Now we want to write the sum of max array from start to end on the file */
-    output << total << "\n \n";
+    output << total << "\n";
             
 }
 
