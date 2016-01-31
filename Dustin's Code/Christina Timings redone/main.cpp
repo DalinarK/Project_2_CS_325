@@ -11,19 +11,8 @@
 #include <time.h>		//for random number generation
 #include <string>
 #include <sstream>
-
-// just a large int for initializing purposes
-const int largeInt = 999999;
-
-using std::vector;
-
-struct coins
-{
-    int coinAmount;
-    int coinValue;
-    int changeLeft;
-};
-
+#include "changegreedy.h"
+#include "changeslow.h"
 
 //Function prototypes
 std::vector<std::string>* readFile(std::ifstream& input);
@@ -34,8 +23,6 @@ std::vector<int> convertToNumber(std::string &line);
 std::vector<std::vector<int>> getNumbers(std::ifstream &input);
 void writeResults(std::ofstream &output, std::vector<int>& results, int total);
 void runtimetrial(int (*whichAlg)(std::vector<int>&, int, std::vector<int>&), std::vector<int> &coinSet, int coinSetValue, std::vector<int> &actualCoinsUsed);
-vector <struct coins> makeChange(int changeAmount, vector <struct coins> coinsUsedVector);
-int coinCounter(vector <struct coins> resultVector);
 
 /**************************************************************
  * *  This main function creates a vector of randomly generated integers
@@ -47,16 +34,7 @@ int coinCounter(vector <struct coins> resultVector);
 int main(int argc, char* argv[]){
 	std::string filename;
 	std::string outputfilename;
-    std::string timingOutputFile;
-
-
-    int changeAmount;
-    vector <struct coins> coinsUsedVector;
-    vector <int> coinValues;
-
-    vector <struct coins> resultVector;
-    int resultCoins;
-
+    std::string timingFilename;
 	/* The first argument (argc) is the number of elements in the array so we should have two elements the program name and file name 
 	Credit: http://www.site.uottawa.ca/~lucia/courses/2131-05/labs/Lab3/CommandLineArguments.html
 	*/
@@ -74,8 +52,8 @@ int main(int argc, char* argv[]){
 		int strsize = tempoutputfilename.length() - 4;
 		/* http://www.cplusplus.com/reference/string/string/operator+/ 
 		http://www.cplusplus.com/reference/string/string/substr/ */
-		outputfilename = (tempoutputfilename.substr(0, strsize));
-        timingOutputFile =(tempoutputfilename.substr(0, strsize)) + "timings.txt";
+		outputfilename = (tempoutputfilename.substr(0, strsize)) + "change.txt";
+        timingFilename = (tempoutputfilename.substr(0, strsize)) + "timings.txt";
 		std::cout << outputfilename << std::endl;
 	}
 	//cout << filename << endl;
@@ -83,8 +61,15 @@ int main(int argc, char* argv[]){
 	Credit: http://www.cplusplus.com/doc/tutorial/files/*/
     std::ifstream textfile;
 	/* In order to open a file with a stream object we use its member function open */
+    textfile.open(filename);
 	/* To check if a file stream was successful opening a file, you can do it by calling to member is_open
 	Credit: http://www.cplusplus.com/doc/tutorial/files/*/
+    if(!textfile.is_open())
+    {
+        std::cout << "The file could not be opened." << std::endl;
+        textfile.close();
+        exit(1);
+    }
 	/* Call function to put first alternating lines as the coin set input and the second alternating lines as total change V */
     std::vector<std::vector<int>> coinsetinput;
     std::vector<int> changevalueV;
@@ -93,53 +78,41 @@ int main(int argc, char* argv[]){
 	/* Stream class to write on files
 	Credit: http://www.cplusplus.com/doc/tutorial/files/*/
 	std::ofstream textfile2;
-    std::ofstream timingStream;
+    std::ofstream timingFileStream;
 
     textfile2.open(outputfilename);
-    timingStream.open(timingOutputFile);
-
+    timingFileStream.open(timingFilename);
     if(!textfile2.is_open())
     {
         std::cout << "Cannot open for writing. Check the permissions of the directory." << std::endl;
         textfile2.close();
         exit(1);
     }
-    if(!timingStream.is_open())
+
+    if(!timingFileStream.is_open())
     {
-        std::cout << "Cannot open timingFile for writing. Check the permissions of the directory." << std::endl;
-        timingStream.close();
+        std::cout << "Cannot open for timings. Check the permissions of the directory." << std::endl;
+        timingFileStream.close();
         exit(1);
     }
-	/* Display a babel for brute force algorithm time trial */
-    std::cout << "Testing Bruteforce...." << std::endl;
-    
-        //Question 4
-    //http://www.cplusplus.com/reference/vector/vector/vector/
-    // the iterator constructor can also be used to construct from arrays:
+	/* Display a babel for greedy algorithm time trial */
+    std::cout << "Testing changegreedy...." << std::endl;
+    for( unsigned int i = 0; i < coinsetinput.size(); i++ )
+    {
+        /* Run greedy algorithm on input numbers from first to last element */
+		std::vector<int> coinCount;
 
-        // the iterator constructor can also be used to construct from arrays:
-  int myints0[] = {1, 5, 10, 25, 50};
-  std::vector<int> coinSet1 (myints0, myints0 + sizeof(myints0) / sizeof(int) );
-  for(int i = 1000000; i <= 50000000; i += 10000 ){
-        writeResults( textfile2, coinSet1, i );
+        std::clock_t start = std::clock();
+        int result = changegreedy( coinsetinput.at(i), changevalueV.at(i), coinCount);
+        double runtime = (std::clock() - start) / (double) CLOCKS_PER_SEC;
+        timingFileStream << changevalueV.at(i) << ", " << runtime << "\n";
+        cout << "time: " << runtime << "\n";
     }
-    
-    // std::vector<int> coinSet4;    
-    // for(int i = 0; i <= 15; ++i ){
-    //     if(i == 0){
-    //         coinSet4.push_back(1);
-    //     }else{
-    //         coinSet4.push_back(i * 2);
-    //     }
-    // }
 
-    // for(int i = 1; i <= 300; ++i ){
-    //     writeResults( textfile2, coinSet4, i );
-    // }    
+        // void runtimetrial(int (*whichAlg)(std::vector<int>&, int, std::vector<int>&), std::vector<int>& coinSet, int coinSetValue, std::vector<int> &actualCoinsUsed)
 
- 
-    timingStream.close();
-    textfile2.close();	
+        timingFileStream.close();
+        textfile2.close();	
 }
 
 /**************************************************************
@@ -258,6 +231,21 @@ void writeResults(std::ofstream &output, std::vector<int>& results,int total)
 	/* Once you get to last number, add a end bracket and newline */
     output << results.at(results.size() - 1) << "]" << std::endl;
     /* Now we want to write the sum of max array from start to end on the file */
-    output << total << "\n";
+    output << total << "\n \n";
             
 }
+
+
+/**************************************************************
+ * *  Function name: runtimetrial
+ * *  Description: Function will write results to MSSResults text file
+ * ***************************************************************/
+void runtimetrial(int (*whichAlg)(std::vector<int>&, int, std::vector<int>&), std::vector<int>& coinSet, int coinSetValue, std::vector<int> &actualCoinsUsed)
+{
+    std::clock_t start = std::clock();
+    int result = whichAlg( coinSet, coinSetValue, actualCoinsUsed );
+    double runtime = (std::clock() - start) / (double) CLOCKS_PER_SEC;
+    std::cout << "Coin Set Size(n): " << coinSet.size() << " Minimum Coins: " << result << " CPU Seconds: " << runtime << '\n';
+
+}
+
