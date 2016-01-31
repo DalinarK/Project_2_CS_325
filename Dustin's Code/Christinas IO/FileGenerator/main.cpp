@@ -120,14 +120,28 @@ int main(int argc, char* argv[]){
     /* Display a babel for brute force algorithm time trial */
     std::cout << "Testing Bruteforce...." << std::endl;
     
-        //Question 4
+    //Question 4
     //http://www.cplusplus.com/reference/vector/vector/vector/
     // the iterator constructor can also be used to construct from arrays:
-    int myints0[] = {1, 5, 10, 25, 50};
-    std::vector<int> coinSet1 (myints0, myints0 + sizeof(myints0) / sizeof(int) );
-    for(int i = 1; i <= 50000000; i += 1000000 ){
-    writeResults( textfile2, coinSet1, i );
-    }
+      int myints0[] = {1, 5, 10, 25, 50};
+      std::vector<int> coinSet1 (myints0, myints0 + sizeof(myints0) / sizeof(int) );
+      for(int i = 1; i <= 100000000; i += 1000000 ){
+            writeResults( textfile2, coinSet1, i );
+        }
+
+
+    // int myints0[] = {1, 5, 10, 25, 50};
+    // std::vector<int> coinSet1 (myints0, myints0 + sizeof(myints0) / sizeof(int) );
+    // for(int i = 1; i <= 50000000; i += 1000000 ){
+    // writeResults( textfile2, coinSet1, i );
+    // }
+
+    //     // the iterator constructor can also be used to construct from arrays:
+    //   int myints1[] = {1, 2, 6, 12, 24, 48, 60};
+    //   std::vector<int> coinSet2 (myints1, myints1 + sizeof(myints1) / sizeof(int) );
+    //   for(int i = 1; i <= 100000000; i += 1000000 ){
+    //     writeResults( textfile2, coinSet2, i );
+    // }
 
     // std::vector<int> coinSet4;    
     // for(int i = 0; i <= 15; ++i ){
@@ -138,7 +152,7 @@ int main(int argc, char* argv[]){
     //     }
     // }
 
-    // for(int i = 1; i <= 300; ++i ){
+    // for(int i = 1; i <= 100000000; i += 1000000 ){
     //     writeResults( textfile2, coinSet4, i );
     // }    
 
